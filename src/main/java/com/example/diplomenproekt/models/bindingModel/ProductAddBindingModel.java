@@ -8,6 +8,7 @@ import javax.validation.constraints.Size;
 public class ProductAddBindingModel {
     private String name;
     private Double price;
+    private Double minprice;
     private Integer quantity;
     private String category;
     private String company;
@@ -31,6 +32,16 @@ public class ProductAddBindingModel {
     @NotNull
     public Double getPrice() {
         return price;
+    }
+    @Positive
+    @NotNull
+    public Double getMinPrice() {
+        return minprice;
+    }
+
+    public ProductAddBindingModel setMinPrice(Double minprice) {
+        this.minprice = minprice;
+        return this;
     }
 
     public ProductAddBindingModel setPrice(Double price) {

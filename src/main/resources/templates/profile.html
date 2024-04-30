@@ -179,13 +179,18 @@
                     <div class="d-flex justify-content-between align-items-center experience"><span>Add Company</span><a
                             href="/companies/add-company" class="border px-3 p-1 add-experience"><i
                             class="fa fa-plus"></i>&nbsp;Add</a></div>
+                    <div style="margin-top: 10px" class="d-flex justify-content-between align-items-center experience"><span>Add Promotion</span><a
+                            href="/companies/add-promotion" class="border px-3 p-1 add-experience"><i
+                            class="fa fa-plus"></i>&nbsp;Add</a></div>
                     <br>
                     <table>
                         <tr>
                             <th>Companies</th>
+                            <th>Income</th>
                         </tr>
                         <tr th:each="company: ${companies}">
                             <td th:text="${company.name}"></td>
+                            <td th:text="${company.income}"></td>
                         </tr>
                     </table>
                 </div>

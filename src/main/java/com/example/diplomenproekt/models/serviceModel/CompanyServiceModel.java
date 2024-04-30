@@ -12,4 +12,5 @@ import lombok.Setter;
 public class CompanyServiceModel {
     private String name;
     private Integer vat;
+    private String income;
 }

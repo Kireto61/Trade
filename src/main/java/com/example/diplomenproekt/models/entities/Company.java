@@ -35,6 +35,12 @@ public class Company extends BaseEntity {
     @ManyToOne
     private User user;
 
+    @Column(nullable = false, columnDefinition = "double default 0" )
+    private Double income;
+
+    @OneToMany(mappedBy = "company")
+    private List<Promotion> promotion;
+
     @OneToMany(mappedBy = "company")
     private List<Product> companies;
 }

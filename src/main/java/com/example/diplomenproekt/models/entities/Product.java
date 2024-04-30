@@ -26,6 +26,11 @@ public class Product extends BaseEntity {
 
     @Column(nullable = false)
     @Min(0)
+//    @Max(99999)
+    private Double minprice;
+
+    @Column(nullable = false)
+    @Min(0)
     private Integer quantity;
 
     @Column(nullable = false, columnDefinition = "LONGTEXT")

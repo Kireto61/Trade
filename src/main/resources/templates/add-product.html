@@ -98,6 +98,14 @@
                     Quantity must be a positive number.
                 </p>
             </div>
+            <div class="form-group">
+                <label class="text-white font-weight-bold" for="price">Min Price</label>
+                <input th:field="*{minPrice}" th:errorclass="bg-danger" id="minprice" type="number" min="0.00" max="50000.00" name="minprice" class="form-control"
+                       placeholder="Price">
+                <p th:if="${#fields.hasErrors('price')}" class="errors alert alert-danger">
+                    Price must be a positive number.
+                </p>
+            </div>
         </div>
         <div class="row">
             <div class="form-group col-md-6 mb-3">

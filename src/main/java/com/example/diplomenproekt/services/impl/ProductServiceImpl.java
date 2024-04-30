@@ -52,14 +52,14 @@ public class ProductServiceImpl implements ProductsService {
         product.setPrice(productAddBindingModel.getPrice());
         product.setName(productAddBindingModel.getName());
         product.setQuantity(productAddBindingModel.getQuantity());
-
+        product.setMinprice(productAddBindingModel.getMinPrice());
         productRepository.save(product);
     }
 
     @Override
     public List<ProductViewModel> getAllProducts() {
         return productRepository
-                .findAll()
+                .getAll()
                 .stream()
                 .map(product -> modelMapper.map(product, ProductViewModel.class))
                 .collect(Collectors.toList());
@@ -68,7 +68,7 @@ public class ProductServiceImpl implements ProductsService {
     @Override
     public List<ProductViewModel> getAllVideocards() {
         return productRepository
-                .findAll()
+                .getAllBy(CategoryEnum.VIDEOCARDS.name())
                 .stream()
                 .filter(product -> product.getCategory().equals(CategoryEnum.VIDEOCARDS))
                 .map(product -> modelMapper.map(product, ProductViewModel.class))
@@ -78,7 +78,7 @@ public class ProductServiceImpl implements ProductsService {
     @Override
     public List<ProductViewModel> getAllProcessors() {
         return productRepository
-                .findAll()
+                .getAllBy(CategoryEnum.PROCESSORS.name())
                 .stream()
                 .filter(product -> product.getCategory().equals(CategoryEnum.PROCESSORS))
                 .map(product -> modelMapper.map(product, ProductViewModel.class))
@@ -88,7 +88,7 @@ public class ProductServiceImpl implements ProductsService {
     @Override
     public List<ProductViewModel> getAllHeadphones() {
         return productRepository
-                .findAll()
+                .getAllBy(CategoryEnum.HEADPHONES.name())
                 .stream()
                 .filter(product -> product.getCategory().equals(CategoryEnum.HEADPHONES))
                 .map(product -> modelMapper.map(product, ProductViewModel.class))
@@ -98,7 +98,7 @@ public class ProductServiceImpl implements ProductsService {
     @Override
     public List<ProductViewModel> getAllPrinters() {
         return productRepository
-                .findAll()
+                .getAllBy(CategoryEnum.PRINTERS.name())
                 .stream()
                 .filter(product -> product.getCategory().equals(CategoryEnum.PRINTERS))
                 .map(product -> modelMapper.map(product, ProductViewModel.class))
@@ -108,7 +108,7 @@ public class ProductServiceImpl implements ProductsService {
     @Override
     public List<ProductViewModel> getAllOfficeChairs() {
         return productRepository
-                .findAll()
+                .getAllBy(CategoryEnum.OFFICE_CHAIRS.name())
                 .stream()
                 .filter(product -> product.getCategory().equals(CategoryEnum.OFFICE_CHAIRS))
                 .map(product -> modelMapper.map(product, ProductViewModel.class))
@@ -118,7 +118,7 @@ public class ProductServiceImpl implements ProductsService {
     @Override
     public List<ProductViewModel> getAllScanners() {
         return productRepository
-                .findAll()
+                .getAllBy(CategoryEnum.SCANNERS.name())
                 .stream()
                 .filter(product -> product.getCategory().equals(CategoryEnum.SCANNERS))
                 .map(product -> modelMapper.map(product, ProductViewModel.class))
@@ -128,7 +128,7 @@ public class ProductServiceImpl implements ProductsService {
     @Override
     public List<ProductViewModel> getAllRouters() {
         return productRepository
-                .findAll()
+                .getAllBy(CategoryEnum.ROUTERS.name())
                 .stream()
                 .filter(product -> product.getCategory().equals(CategoryEnum.ROUTERS))
                 .map(product -> modelMapper.map(product, ProductViewModel.class))
@@ -138,7 +138,7 @@ public class ProductServiceImpl implements ProductsService {
     @Override
     public List<ProductViewModel> getAllMice() {
         return productRepository
-                .findAll()
+                .getAllBy(CategoryEnum.MICE.name())
                 .stream()
                 .filter(product -> product.getCategory().equals(CategoryEnum.MICE))
                 .map(product -> modelMapper.map(product, ProductViewModel.class))
@@ -148,7 +148,7 @@ public class ProductServiceImpl implements ProductsService {
     @Override
     public List<ProductViewModel> getAllKeyboards() {
         return productRepository
-                .findAll()
+                .getAllBy(CategoryEnum.KEYBOARDS.name())
                 .stream()
                 .filter(product -> product.getCategory().equals(CategoryEnum.KEYBOARDS))
                 .map(product -> modelMapper.map(product, ProductViewModel.class))
@@ -158,21 +158,21 @@ public class ProductServiceImpl implements ProductsService {
     @Override
     public ProductViewModel findProductById(Long id) throws Throwable {
         return productRepository
-                .findById(id)
+                .gettById(id)
                 .map(product -> modelMapper.map(product, ProductViewModel.class))
                 .orElseThrow(() -> new Throwable("Product with id " + id + " not found!"));
     }
 
     @Override
     public boolean checkQuantityAvailability(Integer portion, Long id) throws Throwable {
-        Integer productQuantity = productRepository.findById(id).map(Product::getQuantity).orElseThrow(() -> new Throwable("Product with id " + id + " not found!"));
+        Integer productQuantity = productRepository.gettById(id).map(Product::getQuantity).orElseThrow(() -> new Throwable("Product with id " + id + " not found!"));
         return portion <= productQuantity;
     }
 
     @Override
     public void addProductToCart(Integer portion, Long id, Object email) throws Throwable {
         User user = userRepository.findByEmail(email.toString()).orElseThrow(() -> new Throwable("User with email " + email + " not found!"));
-        Product product = productRepository.findById(id).orElseThrow(() -> new Throwable("Product with id " + id + " not found!"));
+        Product product = productRepository.gettById(id).orElseThrow(() -> new Throwable("Product with id " + id + " not found!"));
 
         product.setQuantity(product.getQuantity() - portion);
 
@@ -188,6 +188,9 @@ public class ProductServiceImpl implements ProductsService {
             shoppingCartEntity.setWishedQuantityForOrder(portion);
 
             shoppingCartService.addShoppingCartEntity(shoppingCartEntity);
+            Company company = companyRepository.findById(product.getCompany().getId()).get();
+            company.setIncome(company.getIncome()+product.getPrice() * portion);
+            companyRepository.save(company);
 
             user.getProductsCart().add(shoppingCartEntity);
             userRepository.save(user);
