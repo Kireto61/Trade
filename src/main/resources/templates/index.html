@@ -48,9 +48,7 @@
                 <li th:if="${email != null}" class="nav-item">
                     <a class="nav-link" th:href="@{/products/catalog/{category}(category = 'all')}">Catalog</a>
                 </li>
-                <li th:if="${email != null}" class="nav-item">
-                    <a class="nav-link" href="/products/add-product">Add Product</a>
-                </li>
+
                 <li th:if="${email != null}" class="nav-item">
                     <a class="nav-link" href="/products/my-history">My History</a>
                 </li>

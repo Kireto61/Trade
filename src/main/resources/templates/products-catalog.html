@@ -298,9 +298,7 @@
             <li th:if="${email != null}" class="nav-item">
                 <a class="nav-link" th:href="@{/products/catalog/{category}(category = 'all')}">Catalog</a>
             </li>
-            <li th:if="${email != null}" class="nav-item">
-                <a class="nav-link" href="/products/add-product">Add Product</a>
-            </li>
+
             <li th:if="${email != null}" class="nav-item">
                 <a class="nav-link" href="/products/my-history">My History</a>
             </li>
@@ -330,16 +328,28 @@
                     <a href="#">CATEGORIES</a>
                     <ul>
                         <li><a th:href="@{/products/catalog/{category}(category = 'all')}">ALL</a></li>
-                        <li><a th:href="@{/products/catalog/{category}(category = 'videocards')}">VIDEOCARDS</a></li>
-                        <li><a th:href="@{/products/catalog/{category}(category = 'processors')}">PROCESSORS</a></li>
-                        <li><a th:href="@{/products/catalog/{category}(category = 'headphones')}">HEADPHONES</a></li>
-                        <li><a th:href="@{/products/catalog/{category}(category = 'printers')}">PRINTERS</a></li>
-                        <li><a th:href="@{/products/catalog/{category}(category = 'office_chairs')}">OFFICE_CHAIRS</a>
+                        <li><a th:href="@{/products/catalog/{category}(category = 'BTC')}">BTC</a></li>
+                        <li><a th:href="@{/products/catalog/{category}(category = 'ETH')}">ETH</a></li>
+                        <li><a th:href="@{/products/catalog/{category}(category = 'USDT')}">USDT</a></li>
+                        <li><a th:href="@{/products/catalog/{category}(category = 'XRP')}">XRP</a></li>
+                        <li><a th:href="@{/products/catalog/{category}(category = 'BNB')}">BNB</a>
                         </li>
-                        <li><a th:href="@{/products/catalog/{category}(category = 'scanners')}">SCANNERS</a></li>
-                        <li><a th:href="@{/products/catalog/{category}(category = 'routers')}">ROUTERS</a></li>
-                        <li><a th:href="@{/products/catalog/{category}(category = 'mice')}">MICE</a></li>
-                        <li><a th:href="@{/products/catalog/{category}(category = 'keyboards')}">KEYBOARDS</a></li>
+                        <li><a th:href="@{/products/catalog/{category}(category = 'SOL')}">SOL</a></li>
+                        <li><a th:href="@{/products/catalog/{category}(category = 'USDC')}">USDC</a></li>
+                        <li><a th:href="@{/products/catalog/{category}(category = 'DOGE')}">DOGE</a></li>
+                        <li><a th:href="@{/products/catalog/{category}(category = 'TRX')}">TRX</a></li>
+                        <li><a th:href="@{/products/catalog/{category}(category = 'ADA')}">ADA</a></li>
+                        <li><a th:href="@{/products/catalog/{category}(category = 'HYPE')}">HYPE</a></li>
+                        <li><a th:href="@{/products/catalog/{category}(category = 'SUI')}">SUI</a></li>
+                        <li><a th:href="@{/products/catalog/{category}(category = 'LINK')}">LINK</a></li>
+                        <li><a th:href="@{/products/catalog/{category}(category = 'AVAX')}">AVAX</a></li>
+                        <li><a th:href="@{/products/catalog/{category}(category = 'XLM')}">XLM</a></li>
+                        <li><a th:href="@{/products/catalog/{category}(category = 'BCH')}">BCH</a></li>
+                        <li><a th:href="@{/products/catalog/{category}(category = 'LEO')}">LEO</a></li>
+                        <li><a th:href="@{/products/catalog/{category}(category = 'TON')}">TON</a></li>
+                        <li><a th:href="@{/products/catalog/{category}(category = 'SHIB')}">SHIB</a></li>
+                        <li><a th:href="@{/products/catalog/{category}(category = 'HBAR')}">HBAR</a></li>
+
                     </ul>
                 </li>
             </ul>
@@ -369,6 +379,8 @@
             </div>
         </div>
     </div>
+    <div id="currency" th:text="${chosen_currency}"></div>
+    <div id="price"></div>
 </div>
 </body>
 
@@ -424,4 +436,11 @@
             return price >= minPrice && price <= maxPrice;
         }).show();
     }
+</script>
+<script>
+    const eventSource = new EventSource("http://localhost:8080/stream");
+    eventSource.onmessage = function(event) {
+        console.log(event.data);
+        document.getElementById("price").innerText = JSON.parse(event.data)[document.getElementById("currency").innerText + "/USD"];
+    };
 </script>

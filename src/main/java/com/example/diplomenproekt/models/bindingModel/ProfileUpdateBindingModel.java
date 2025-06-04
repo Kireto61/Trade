@@ -9,6 +9,7 @@ public class ProfileUpdateBindingModel {
     private String oldPassword;
     private String newPassword;
     private String confirmPassword;
+    private double balance;
 
     public ProfileUpdateBindingModel() {
     }
@@ -52,7 +53,11 @@ public class ProfileUpdateBindingModel {
         this.oldPassword = oldPassword;
         return this;
     }
-
+    public double getBalance(){return balance;}
+    public ProfileUpdateBindingModel setBalance(double balance) {
+        this.balance = balance;
+        return this;
+    }
     @Size(min = 3, max = 20)
     public String getNewPassword() {
         return newPassword;

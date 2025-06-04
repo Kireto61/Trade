@@ -70,9 +70,7 @@
             <li th:if="${email != null}" class="nav-item">
                 <a class="nav-link" th:href="@{/products/catalog/{category}(category = 'all')}">Catalog</a>
             </li>
-            <li th:if="${email != null}" class="nav-item">
-                <a class="nav-link" href="/products/add-product">Add Product</a>
-            </li>
+
             <li th:if="${email != null}" class="nav-item">
                 <a class="nav-link" href="/products/my-history">My History</a>
             </li>
@@ -175,14 +173,11 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="p-3 py-5">
-                    <div class="d-flex justify-content-between align-items-center experience"><span>Add Company</span><a
-                            href="/companies/add-company" class="border px-3 p-1 add-experience"><i
-                            class="fa fa-plus"></i>&nbsp;Add</a></div>
-                    <div style="margin-top: 10px" class="d-flex justify-content-between align-items-center experience"><span>Add Promotion</span><a
-                            href="/companies/add-promotion" class="border px-3 p-1 add-experience"><i
-                            class="fa fa-plus"></i>&nbsp;Add</a></div>
-                    <br>
+                <div class="row p-3 py-5">
+                    <div class="col-3">Balance:</div>
+                    <div class="col-9" th:text="${profileUpdateBindingModel.getBalance()}"></div>
+                </div>
+                <div class="p-1 py-3">
                     <table>
                         <tr>
                             <th>Companies</th>

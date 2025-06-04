@@ -40,6 +40,5 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private CategoryEnum category;
 
-    @ManyToOne
-    private Company company;
+
 }

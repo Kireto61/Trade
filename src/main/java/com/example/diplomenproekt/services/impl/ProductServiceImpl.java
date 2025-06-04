@@ -1,14 +1,11 @@
 package com.example.diplomenproekt.services.impl;
 
-import com.example.diplomenproekt.models.bindingModel.ProductAddBindingModel;
-import com.example.diplomenproekt.models.entities.Company;
 import com.example.diplomenproekt.models.entities.Product;
 import com.example.diplomenproekt.models.entities.ShoppingCartEntity;
 import com.example.diplomenproekt.models.entities.User;
 import com.example.diplomenproekt.models.entities.enums.CategoryEnum;
 import com.example.diplomenproekt.models.viewModel.MaxPriceViewModel;
 import com.example.diplomenproekt.models.viewModel.ProductViewModel;
-import com.example.diplomenproekt.repositories.CompanyRepository;
 import com.example.diplomenproekt.repositories.ProductRepository;
 import com.example.diplomenproekt.repositories.UserRepository;
 import com.example.diplomenproekt.services.ProductsService;
@@ -26,34 +23,16 @@ public class ProductServiceImpl implements ProductsService {
 
     private final ProductRepository productRepository;
     private final ModelMapper modelMapper;
-    private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
     private final ShoppingCartService shoppingCartService;
 
     public ProductServiceImpl(ProductRepository productRepository, ModelMapper modelMapper,
-                              CompanyRepository companyRepository, UserRepository userRepository,
+                               UserRepository userRepository,
                               ShoppingCartService shoppingCartService) {
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
-        this.companyRepository = companyRepository;
         this.userRepository = userRepository;
         this.shoppingCartService = shoppingCartService;
-    }
-
-    @Override
-    public void addProduct(ProductAddBindingModel productAddBindingModel, Object email) throws Throwable {
-        Company company = companyRepository.findByName(productAddBindingModel.getCompany()).orElseThrow(()
-                -> new Throwable("Company with name " + productAddBindingModel.getCompany() + " not found!"));
-
-        Product product = new Product();
-        product.setUrl(productAddBindingModel.getUrl());
-        product.setCategory(CategoryEnum.valueOf(productAddBindingModel.getCategory()));
-        product.setCompany(company);
-        product.setPrice(productAddBindingModel.getPrice());
-        product.setName(productAddBindingModel.getName());
-        product.setQuantity(productAddBindingModel.getQuantity());
-        product.setMinprice(productAddBindingModel.getMinPrice());
-        productRepository.save(product);
     }
 
     @Override
@@ -66,91 +45,11 @@ public class ProductServiceImpl implements ProductsService {
     }
 
     @Override
-    public List<ProductViewModel> getAllVideocards() {
+    public List<ProductViewModel> getAllOf(CategoryEnum currency) {
         return productRepository
-                .getAllBy(CategoryEnum.VIDEOCARDS.name())
+                .getAllBy(currency.toString())
                 .stream()
-                .filter(product -> product.getCategory().equals(CategoryEnum.VIDEOCARDS))
-                .map(product -> modelMapper.map(product, ProductViewModel.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ProductViewModel> getAllProcessors() {
-        return productRepository
-                .getAllBy(CategoryEnum.PROCESSORS.name())
-                .stream()
-                .filter(product -> product.getCategory().equals(CategoryEnum.PROCESSORS))
-                .map(product -> modelMapper.map(product, ProductViewModel.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ProductViewModel> getAllHeadphones() {
-        return productRepository
-                .getAllBy(CategoryEnum.HEADPHONES.name())
-                .stream()
-                .filter(product -> product.getCategory().equals(CategoryEnum.HEADPHONES))
-                .map(product -> modelMapper.map(product, ProductViewModel.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ProductViewModel> getAllPrinters() {
-        return productRepository
-                .getAllBy(CategoryEnum.PRINTERS.name())
-                .stream()
-                .filter(product -> product.getCategory().equals(CategoryEnum.PRINTERS))
-                .map(product -> modelMapper.map(product, ProductViewModel.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ProductViewModel> getAllOfficeChairs() {
-        return productRepository
-                .getAllBy(CategoryEnum.OFFICE_CHAIRS.name())
-                .stream()
-                .filter(product -> product.getCategory().equals(CategoryEnum.OFFICE_CHAIRS))
-                .map(product -> modelMapper.map(product, ProductViewModel.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ProductViewModel> getAllScanners() {
-        return productRepository
-                .getAllBy(CategoryEnum.SCANNERS.name())
-                .stream()
-                .filter(product -> product.getCategory().equals(CategoryEnum.SCANNERS))
-                .map(product -> modelMapper.map(product, ProductViewModel.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ProductViewModel> getAllRouters() {
-        return productRepository
-                .getAllBy(CategoryEnum.ROUTERS.name())
-                .stream()
-                .filter(product -> product.getCategory().equals(CategoryEnum.ROUTERS))
-                .map(product -> modelMapper.map(product, ProductViewModel.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ProductViewModel> getAllMice() {
-        return productRepository
-                .getAllBy(CategoryEnum.MICE.name())
-                .stream()
-                .filter(product -> product.getCategory().equals(CategoryEnum.MICE))
-                .map(product -> modelMapper.map(product, ProductViewModel.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ProductViewModel> getAllKeyboards() {
-        return productRepository
-                .getAllBy(CategoryEnum.KEYBOARDS.name())
-                .stream()
-                .filter(product -> product.getCategory().equals(CategoryEnum.KEYBOARDS))
+                .filter(product -> product.getCategory().equals(currency))
                 .map(product -> modelMapper.map(product, ProductViewModel.class))
                 .collect(Collectors.toList());
     }
@@ -188,9 +87,7 @@ public class ProductServiceImpl implements ProductsService {
             shoppingCartEntity.setWishedQuantityForOrder(portion);
 
             shoppingCartService.addShoppingCartEntity(shoppingCartEntity);
-            Company company = companyRepository.findById(product.getCompany().getId()).get();
-            company.setIncome(company.getIncome()+product.getPrice() * portion);
-            companyRepository.save(company);
+
 
             user.getProductsCart().add(shoppingCartEntity);
             userRepository.save(user);

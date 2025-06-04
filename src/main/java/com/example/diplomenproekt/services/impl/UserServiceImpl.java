@@ -68,7 +68,6 @@ public class UserServiceImpl implements UserService {
             return Optional.empty();
         }
         User user = new User();
-        user.setCompanies(new ArrayList<>());
         user.setProductsCart(new ArrayList<>());
         user.setHistoryProducts(new ArrayList<>());
         user.setFirstName(userRegisterBindingModel.getFirstName());

@@ -8,7 +8,6 @@ import com.example.diplomenproekt.models.serviceModel.UserLoginServiceModel;
 import com.example.diplomenproekt.models.serviceModel.UserServiceModel;
 import com.example.diplomenproekt.models.viewModel.CompanyViewModel;
 import com.example.diplomenproekt.models.viewModel.UserViewModel;
-import com.example.diplomenproekt.services.CompanyService;
 import com.example.diplomenproekt.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
@@ -28,13 +27,11 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserService userService;
-    private final CompanyService companyService;
     private final ModelMapper modelMapper;
     private final HttpSession httpSession;
 
-    public UserController(UserService userService, CompanyService companyService, ModelMapper modelMapper, HttpSession httpSession) {
+    public UserController(UserService userService,  ModelMapper modelMapper, HttpSession httpSession) {
         this.userService = userService;
-        this.companyService = companyService;
         this.modelMapper = modelMapper;
         this.httpSession = httpSession;
     }
@@ -68,24 +65,7 @@ public class UserController {
         return "login";
     }
 
-    @GetMapping("/{userId}/companies")
-    public String getCompany(@PathVariable("userId") Long userId, Model model) {
 
-        if (!model.containsAttribute("email")) {
-            model.addAttribute("email", httpSession.getAttribute("email"));
-        }
-
-        if (httpSession.getAttribute("email") == null) {
-            return "redirect:/";
-        }
-        List<CompanyServiceModel> users = companyService.getAllCompanies(userId);
-        model.addAttribute("companies",
-                users.stream()
-                        .map(e -> this.modelMapper.map(e, CompanyViewModel.class))
-                        .collect(Collectors.toList())
-        );
-        return "companies";
-    }
 
     @PostMapping("/login")
     public String postLogin(@ModelAttribute UserLoginBindingModel userModel,
@@ -167,9 +147,6 @@ public class UserController {
             model.addAttribute("email", httpSession.getAttribute("email"));
         }
 
-        if (!model.containsAttribute("companies")) {
-            model.addAttribute("companies", companyService.getAllProfileCompanies(httpSession.getAttribute("email")));
-        }
 
         if (!model.containsAttribute("info")) {
             model.addAttribute("profileUpdateBindingModel", userService.getUserInfo(httpSession.getAttribute("email")));
@@ -197,9 +174,7 @@ public class UserController {
             model.addAttribute("email", httpSession.getAttribute("email"));
         }
 
-        if (!model.containsAttribute("companies")) {
-            model.addAttribute("companies", companyService.getAllProfileCompanies(httpSession.getAttribute("email")));
-        }
+        
 
         return "profile";
     }
